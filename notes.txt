@@ -1,0 +1,66 @@
+Plan:
+
+SN with 10 POI.
+- Should be placed far apart.
+
+Vehicles
+- 100 vehicles run at a time
+- All start at the same location (not included in POIs)
+- Must visit all 10 POI only once.
+
+Decision
+- Determine the probability of visiting X remaining POIs. (p0,...,p9) where sum (p0,...,p9) = 1
+- Weighted random choice of next pi
+
+Probability
+- Ci = cost*avg([from][to].trails)
+- pi = Ci/sum(C)
+
+trail
+- dti = travel time to node
+- dti / max(dt)
+
+Pseudo Code:
+- Preprocess
+1. Use a SUMO map. (London-seg4)
+2. Obtain the networkx graph
+3. Load edges
+4. Load Nodes
+5. Create a 2d connection matrix of every POI to every other POI
+
+
+
+- Every hop
+1. Update all Ci.
+2. Update all pi.
+3. Use a lottery random scheduler with 1000 as the large number
+4. conn[from][to].visits += 1
+5. conn[from][to].trails.append(dt)
+
+- After each set of 100 vehicles have run
+Export Connections to .csv
+iteration,from,to,cost,visits,trail.min,trail.max,trail.avg
+
+- Repeat for 100 iterations
+
+
+
+# Structures
+Conn = {
+	"src":str # POI FROM,
+	"dst":str # POI TO,
+	"cost":float # dist/speed limit (in seconds),
+	"visits":int # Number of visits
+	"trails": [float] # List of times that are added when a vehicle arrives 	
+}
+
+Veh = {
+	"from":str # POI FROM,
+	"to":str # POI TO,
+	"time_start":int # Simulation Time when spawned
+	"time_end":int # Simulation Time when arrived	
+}
+
+POI = {
+	"id":str # SUMO NODE ID
+}
