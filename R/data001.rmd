@@ -1,0 +1,45 @@
+---
+title: "Simple Ant Colony on SUMO"
+author: "Quentin Goss `quentingoss0323@floridapoly.edu`"
+output:
+    html_document:
+        df_print: paged
+---
+
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("latex2exp")
+```
+
+```{r}
+vehicles.1000.csv <- "vehicles.1000.csv"
+vehicles.1000 <- vehicles.1000.csv %>% 
+    read.csv(
+        header = TRUE,
+        sep=','
+    ) %>% 
+    as.tibble()
+vehicles.1000 <- vehicles.1000[,!(colnames(vehicles.1000) == "COST")]
+vehicles.1000
+```
+
+```{r}
+distinct_routes <- vehicles.1000 %>% 
+    distinct(ROUTE)
+
+dr_count <- map_int(
+    distinct_routes[[1]],
+    function(x) {nrow(filter(vehicles.1000,ROUTE == x))}
+)
+
+routes <- tibble(route = distinct_routes[[1]],freq = dr_count)
+```
+
+```{r}
+routes %>% 
+    filter(freq > 2) %>% 
+    ggplot(aes(x=route, y=freq)) +
+    geom_point() +
+    coord_flip()
+```
+

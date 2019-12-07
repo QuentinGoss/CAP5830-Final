@@ -42,5 +42,6 @@ def get_options():
     env.seed = options.seed
     env.start = options.start
     env.poi_file = options.poi_file
+    env.out_dir = options.out_dir
     
     return options
